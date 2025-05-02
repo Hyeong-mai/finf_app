@@ -77,6 +77,7 @@ class AuthService {
 
   Future<void> kakaoLogin(OAuthToken token) async {
     try {
+      print(token);
       // 카카오 사용자 정보 가져오기
       final user = await UserApi.instance.me();
 

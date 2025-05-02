@@ -27,13 +27,13 @@ class OTPDisplay extends StatelessWidget {
         animateFromLastPercent: true,
         progressColor: from
             ? Theme.of(context).colorScheme.inversePrimary
-            : Color.fromRGBO(255, 255, 255, 0.8),
+            : const Color.fromRGBO(255, 255, 255, 0.8),
         backgroundColor: Theme.of(context).primaryColor,
         circularStrokeCap: CircularStrokeCap.round,
         center: Container(
             height: 224,
             width: 224,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color.fromRGBO(255, 255, 255, 0.12), // 반투명 흰색 배경
               shape: BoxShape.circle, // 원형으로 설정
             ),

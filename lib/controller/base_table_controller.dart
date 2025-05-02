@@ -8,6 +8,7 @@ abstract class BaseTableController extends GetxController {
   final selectedSeconds = 0.obs;
 
   void setSelectedTime(String time) {
+    print("base_table_controller");
     selectedTime.value = time;
     // 시간 문자열을 초로 변환
     final parts = time.split(':');
