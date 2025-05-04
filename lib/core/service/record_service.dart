@@ -7,9 +7,10 @@ class RecordService {
 
   Future<Map<String, dynamic>> fetchStaticBased() async {
     try {
-      final response = await _dio.get('/records/static');
+      final response = await _dio.get('/trainings/static-records');
       return response.data;
     } catch (e) {
+      print(e);
       // 임시 데이터 반환
       return {
         "result": [
@@ -37,9 +38,10 @@ class RecordService {
 
   Future<Map<String, dynamic>> fetchTimeBased() async {
     try {
-      final response = await _dio.get('/records/time');
+      final response = await _dio.get('/trainings/time-based');
       return response.data;
     } catch (e) {
+      print(e);
       // 임시 데이터 반환
       return {
         "result": [
@@ -71,9 +73,10 @@ class RecordService {
 
   Future<Map<String, dynamic>> fetchBreathBased() async {
     try {
-      final response = await _dio.get('/records/breath');
+      final response = await _dio.get('/trainings/breath-based');
       return response.data;
     } catch (e) {
+      print(e);
       // 임시 데이터 반환
       return {
         "result": [

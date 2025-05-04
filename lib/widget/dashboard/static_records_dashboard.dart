@@ -1,8 +1,10 @@
+import 'package:finf_app/core/binding/static_records_binding.dart';
 import 'package:finf_app/core/model/static_record_model.dart';
 import 'package:finf_app/theme/app_text_style.dart';
 import 'package:finf_app/widget/common/custom_button_widget.dart';
 import 'package:finf_app/widget/common/custom_wrapper_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import '../../core/routes/app_routes.dart';
 
 class StaticRecordsDashboard extends StatelessWidget {
@@ -34,8 +36,11 @@ class StaticRecordsDashboard extends StatelessWidget {
           CustomButtonWidget(
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
             backgroundColor: Colors.white,
-            onPressed: () =>
-                Navigator.pushNamed(context, AppRoutes.staticRecords),
+            onPressed: () {
+              final staticRecordsBinding = StaticRecordsBinding();
+              staticRecordsBinding.dependencies();
+              Get.toNamed(AppRoutes.staticRecords);
+            },
             child: Text(
               "관리",
               style: AppTextStyles.b2m("black"),

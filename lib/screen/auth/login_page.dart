@@ -2,13 +2,12 @@ import 'package:finf_app/controller/auth_controller.dart';
 import 'package:finf_app/theme/app_text_style.dart';
 import 'package:finf_app/widget/common/svg_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../core/routes/app_routes.dart'; // 라우트 정의 파일 경로 확인 후 맞게 수정
 import '../../widget/common/app_background.dart';
 
-class LoginPage extends StatelessWidget {
-  final AuthController _authController = AuthController();
-
-  LoginPage({super.key});
+class LoginPage extends GetView<AuthController> {
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,84 +37,110 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
 
-              // 로그인 버튼
-              ElevatedButton(
-                onPressed: () async {
-                  final success = await _authController.signInWithKakao();
-                  if (success && context.mounted) {
-                    Navigator.pushReplacementNamed(context, AppRoutes.main);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFEE500),
-                  foregroundColor: const Color(0xFF000000),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 0,
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgIcon(
-                      url: 'assets/icons/kakao.svg',
-                      size: 24,
-                      color: Color(0xFF3C1E1E),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      '카카오톡으로 시작하기',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF000000),
+              // 카카오 로그인 버튼
+              Obx(() => ElevatedButton(
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : () async {
+                            final success = await controller.signInWithKakao();
+                            if (success) {
+                              Get.offAllNamed(AppRoutes.main);
+                            }
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFEE500),
+                      foregroundColor: const Color(0xFF000000),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
+                      elevation: 0,
                     ),
-                  ],
-                ),
-              ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SvgIcon(
+                          url: 'assets/icons/kakao.svg',
+                          size: 24,
+                          color: Color(0xFF3C1E1E),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          controller.isLoading.value
+                              ? '로그인 중...'
+                              : '카카오톡으로 시작하기',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF000000),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+
               const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () async {
-                  final success = await _authController.signInWithApple();
-                  if (success && context.mounted) {
-                    Navigator.pushReplacementNamed(context, AppRoutes.main);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 0,
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgIcon(
-                      url: 'assets/icons/apple.svg',
-                      size: 24,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      '애플 로그인으로 시작하기',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+
+              // 애플 로그인 버튼
+              Obx(() => ElevatedButton(
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : () async {
+                            final success = await controller.signInWithApple();
+                            if (success) {
+                              Get.offAllNamed(AppRoutes.main);
+                            }
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
+                      elevation: 0,
                     ),
-                  ],
-                ),
-              ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SvgIcon(
+                          url: 'assets/icons/apple.svg',
+                          size: 24,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          controller.isLoading.value
+                              ? '로그인 중...'
+                              : '애플 로그인으로 시작하기',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
 
               const SizedBox(height: 16),
 
-              // 추가 버튼이나 링크를 위한 공간
+              // 에러 메시지 표시
+              // Obx(() => controller.errorMessage.value.isNotEmpty
+              //     ? Padding(
+              //         padding: const EdgeInsets.only(bottom: 16),
+              //         child: Text(
+              //           controller.errorMessage.value,
+              //           style: const TextStyle(
+              //             color: Colors.red,
+              //             fontSize: 14,
+              //           ),
+              //           textAlign: TextAlign.center,
+              //         ),
+              //       )
+              //     : const SizedBox.shrink()),
+
+              // 약관 동의 텍스트
               TextButton(
                 onPressed: () {
                   // 회원가입 또는 다른 액션

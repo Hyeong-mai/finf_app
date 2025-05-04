@@ -1,11 +1,13 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:finf_app/core/model/token_model.dart';
+import 'package:path_provider/path_provider.dart';
 
 class HiveService {
   static const String tokenBoxName = 'tokenBox';
 
   static Future<void> init() async {
-    await Hive.initFlutter();
+    final appDocumentDir = await getApplicationDocumentsDirectory();
+    await Hive.initFlutter(appDocumentDir.path);
     Hive.registerAdapter(TokenModelAdapter());
     await Hive.openBox<TokenModel>(tokenBoxName);
   }

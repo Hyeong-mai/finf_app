@@ -1,5 +1,8 @@
 import 'package:finf_app/core/routes/app_routes.dart';
+import 'package:finf_app/core/binding/auth_binding.dart';
+import 'package:finf_app/core/binding/main_binding.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart'; // 또는 shared_preferences 사용 가능
 
 class SplashPage extends StatefulWidget {
@@ -19,17 +22,25 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _checkAuth() async {
-    // await Future.delayed(Duration(seconds: 1)); // 로딩 화면용 잠깐 대기
+    await Future.delayed(const Duration(seconds: 1)); // 로딩 화면용 잠깐 대기
 
-    // final box = await Hive.openBox('auth');
-    // final token = box.get('accessToken');
+    final box = await Hive.openBox('auth');
 
-    // if (token != null && token.toString().isNotEmpty) {
-    //   Navigator.pushReplacementNamed(context, AppRoutes.main);
-    // } else {
-    //   Navigator.pushReplacementNamed(context, AppRoutes.login);
-    // }
-    Navigator.pushReplacementNamed(context, AppRoutes.main);
+    // 테스트용 임의 토큰 주입
+    await box.put('accessToken', 'test_token_123456');
+    await box.put('refreshToken', 'test_refresh_token_123456');
+
+    final token = box.get('accessToken');
+
+    if (token != null && token.toString().isNotEmpty) {
+      final mainBinding = MainBinding();
+      mainBinding.dependencies();
+      Get.offAllNamed(AppRoutes.main);
+    } else {
+      final authBinding = AuthBinding();
+      authBinding.dependencies();
+      Get.offAllNamed(AppRoutes.login);
+    }
   }
 
   @override

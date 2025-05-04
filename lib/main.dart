@@ -1,4 +1,4 @@
-import 'package:finf_app/binding/auth_binding.dart';
+import 'package:finf_app/core/binding/auth_binding.dart';
 import 'package:finf_app/core/binding/main_binding.dart';
 import 'package:finf_app/controller/main_controller.dart';
 import 'package:finf_app/core/config/env.dart';
@@ -22,10 +22,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:finf_app/core/service/hive_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Hive 초기화
+  await HiveService.init();
+
   // 카카오 SDK 초기화
   KakaoSdk.init(nativeAppKey: Env.kakaoNativeAppKey);
 
@@ -45,20 +51,16 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        initialBinding: MainBinding(),
         initialRoute: AppRoutes.splash,
         builder: (context, child) {
           return AppBackground(child: child ?? const SizedBox());
         },
         routes: {
           AppRoutes.splash: (_) => const SplashPage(),
-          AppRoutes.login: (_) => LoginPage(),
+          AppRoutes.login: (_) => const LoginPage(),
           AppRoutes.terms: (_) => const TermsOfServicePage(),
           AppRoutes.privacy: (_) => const PrivacyPolicyPage(),
-          AppRoutes.main: (_) => GetBuilder<MainController>(
-                init: MainController(),
-                builder: (_) => const MainPage(),
-              ),
+          AppRoutes.main: (_) => const MainPage(),
           AppRoutes.staticRecords: (_) => const StaticRecordsPage(),
           AppRoutes.set: (_) => const SetPage(),
           AppRoutes.record: (_) => const RecordListPage(),

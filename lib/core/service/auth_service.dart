@@ -75,54 +75,53 @@ class AuthService {
     }
   }
 
-  Future<void> kakaoLogin(OAuthToken token) async {
+  Future<bool> kakaoLogin(OAuthToken token) async {
     try {
-      print(token);
-      // 카카오 사용자 정보 가져오기
-      final user = await UserApi.instance.me();
-
-      // 서버에 로그인 요청
-      final response = await _dio.post('/auth/social/login', data: {
-        'provider': 'kakao',
-        'accessToken': token.accessToken,
-        'refreshToken': token.refreshToken,
-        'userId': user.id,
-        'nickname': user.kakaoAccount?.profile?.nickname,
-        'email': user.kakaoAccount?.email,
-      });
-
-      // 서버 응답에서 토큰 저장
-      final tokenModel = TokenModel(
-        accessToken: response.data['accessToken'],
-        refreshToken: response.data['refreshToken'],
-        expiresAt: response.data['expiresAt'],
+      final response = await _dio.post(
+        '/auth/kakao',
+        data: {
+          'access_token': token.accessToken,
+          'refresh_token': token.refreshToken,
+        },
       );
 
-      await HiveService.saveToken(tokenModel);
+      if (response.statusCode == 200) {
+        final tokenModel = TokenModel.fromJson(response.data);
+        _saveTokens(tokenModel.toJson());
+        return true;
+      }
+      return false;
     } catch (e) {
-      throw Exception('카카오 로그인 실패: $e');
+      print('카카오 로그인 서비스 오류: $e');
+      return false;
     }
   }
 
-  Future<void> appleLogin(AuthorizationCredentialAppleID credential) async {
+  Future<bool> appleLogin(AuthorizationCredentialAppleID credential) async {
     try {
-      final response = await _dio.post('/auth/social/login', data: {
-        'provider': 'apple',
+      print('애플 로그인 시도: ${credential.userIdentifier}');
+
+      final response = await _dio.post('/auth/apple', data: {
         'identityToken': credential.identityToken,
         'authorizationCode': credential.authorizationCode,
         'userIdentifier': credential.userIdentifier,
         'email': credential.email,
+        'fullName': {
+          'givenName': credential.givenName,
+          'familyName': credential.familyName,
+        },
       });
 
-      final tokenModel = TokenModel(
-        accessToken: response.data['accessToken'],
-        refreshToken: response.data['refreshToken'],
-        expiresAt: response.data['expiresAt'],
-      );
-
-      await HiveService.saveToken(tokenModel);
+      if (response.statusCode == 200) {
+        final tokenModel = TokenModel.fromJson(response.data);
+        _saveTokens(tokenModel.toJson());
+        return true;
+      }
+      print('애플 로그인 서버 응답 실패: ${response.statusCode}');
+      return false;
     } catch (e) {
-      throw Exception('애플 로그인 실패: $e');
+      print('애플 로그인 서비스 오류: $e');
+      return false;
     }
   }
 

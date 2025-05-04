@@ -13,11 +13,11 @@ class SelectTimeWidget extends StatefulWidget {
 }
 
 class _SelectTimeWidgetState extends State<SelectTimeWidget> {
-  final StaticRecordsController _controller =
-      Get.find<StaticRecordsController>();
   final GlobalKey _wrapperKey = GlobalKey();
   OverlayEntry? _overlayEntry;
   bool _isPickerVisible = false;
+  final StaticRecordsController _controller =
+      Get.find<StaticRecordsController>();
 
   void _togglePicker() {
     if (_isPickerVisible) {
@@ -91,6 +91,7 @@ class _SelectTimeWidgetState extends State<SelectTimeWidget> {
                   )
                 : TextButton(
                     onPressed: () {
+                      print('선택된 시간: ${_controller.selectedTime.value}');
                       _hidePicker();
                     },
                     style: TextButton.styleFrom(

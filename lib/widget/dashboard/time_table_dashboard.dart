@@ -1,8 +1,10 @@
+import 'package:finf_app/core/binding/time_table_binding.dart';
 import 'package:finf_app/theme/app_text_style.dart';
 import 'package:finf_app/widget/common/custom_button_widget.dart';
 import 'package:finf_app/widget/common/custom_wrapper_widget.dart';
 import 'package:finf_app/widget/common/svg_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../core/routes/app_routes.dart';
 
 class TimeTableDashboard extends StatelessWidget {
@@ -47,7 +49,11 @@ class TimeTableDashboard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
             backgroundColor: Colors.white,
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.timetable),
+            onPressed: () {
+              final timeTableBinding = TimeTableBinding();
+              timeTableBinding.dependencies();
+              Get.toNamed(AppRoutes.timetable);
+            },
             child: Center(
               child: Text(
                 "훈련 시작하기",

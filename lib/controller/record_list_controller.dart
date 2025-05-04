@@ -1,5 +1,8 @@
 import 'package:get/get.dart';
 import '../core/service/record_service.dart';
+import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:io';
 
 class RecordListController extends GetxController {
   final RxList<Map<String, dynamic>> staticRecords =
@@ -63,21 +66,46 @@ class RecordListController extends GetxController {
         case 0:
           await _recordService.deleteStaticBased(id);
           await fetchStaticBased();
+          Get.snackbar(
+            '성공',
+            '정적 기록이 삭제되었습니다.',
+            snackPosition: SnackPosition.BOTTOM,
+          );
           break;
         case 1:
           await _recordService.deleteTimeBased(id);
           await fetchTimeBased();
+          Get.snackbar(
+            '성공',
+            '시간 기록이 삭제되었습니다.',
+            snackPosition: SnackPosition.BOTTOM,
+          );
           break;
         case 2:
           await _recordService.deleteBreathBased(id);
           await fetchBreathBased();
+          Get.snackbar(
+            '성공',
+            '호흡 기록이 삭제되었습니다.',
+            snackPosition: SnackPosition.BOTTOM,
+          );
           break;
       }
     } catch (e) {
+      String errorMessage = '삭제 중 오류가 발생했습니다.';
+      if (e is FormatException) {
+        errorMessage = '데이터 형식이 올바르지 않습니다.';
+      } else if (e is TimeoutException) {
+        errorMessage = '서버 응답 시간이 초과되었습니다.';
+      } else if (e is SocketException) {
+        errorMessage = '네트워크 연결을 확인해주세요.';
+      }
       Get.snackbar(
         '오류',
-        '삭제 중 오류가 발생했습니다.',
+        errorMessage,
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
       );
     } finally {
       isLoading.value = false;
